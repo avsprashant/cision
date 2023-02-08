@@ -47,9 +47,8 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/cision:${{ env.BRANCH }}-${{ env.HASH }}
 
       - name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v2
-        with:
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/cision:${{ env.BRANCH }}-${{ env.HASH }}
+        run: docker scan --login --token PROVIDER_AUTH_TOKEN;docker scan -f ./dockerfile/dockerfile ${{ secrets.DOCKERHUB_USERNAME }}/cision:${{ env.BRANCH }}-${{ env.HASH }}
+
 
       - name: Build and push
         uses: docker/build-push-action@v2
