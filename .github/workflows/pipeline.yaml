@@ -49,25 +49,16 @@ jobs:
       # - name: Scan for vulnerabilities
       #   run: docker scan --login --token PROVIDER_AUTH_TOKEN;docker scan -f ./dockerfile/dockerfile ${{ secrets.DOCKERHUB_USERNAME }}/cision:${{ env.BRANCH }}-${{ env.HASH }}
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
-        with:
-          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/cision:${{ env.BRANCH }}-${{ env.HASH }}
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
+      # - name: Run Trivy vulnerability scanner
+      #   uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+      #   with:
+      #     image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/cision:${{ env.BRANCH }}-${{ env.HASH }}
+      #     format: 'template'
+      #     template: '@/contrib/sarif.tpl'
+      #     output: 'trivy-results.sarif'
+      #     severity: 'CRITICAL,HIGH'
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: 'trivy-results.sarif'
-
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: ./dockerfile
-          file: ./dockerfile/dockerfile
-          push: true
-          platforms: linux/amd64,linux/arm64,linux/ppc64le
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cision:${{ env.BRANCH }}-${{ env.HASH }}
+      # - name: Upload Trivy scan results to GitHub Security tab
+      #   uses: github/codeql-action/upload-sarif@v2
+      #   with:
+      #     sarif_file: 'trivy-results.sarif'
