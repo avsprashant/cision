@@ -35,7 +35,7 @@ profiles:
 
 image:
   name: cision
-  tag: latest
+  tag: main-29ea48
   pullPolicy: Always
 
 resources:
