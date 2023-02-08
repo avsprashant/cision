@@ -37,12 +37,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
-      - name: Build and push
-        uses: docker/build-push-action@v2
+      - name: Build
+        uses: docker/build-push-action@v3
         with:
           context: ./dockerfile
           file: ./dockerfile/dockerfile
-          push: false
+          push: true
           platforms: linux/amd64,linux/arm64,linux/ppc64le
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/cision:${{ env.BRANCH }}-${{ env.HASH }}
 
