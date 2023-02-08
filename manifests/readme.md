@@ -1,0 +1,1 @@
+# helm install cision . -n cision --create-namespace --kubeconfig "~/.kube/your kubeconfig file"
