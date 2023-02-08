@@ -4,14 +4,6 @@ on:
   
   workflow_dispatch:
     inputs:
-      ImageVersion:
-        description: 'Provide the Image Version to Build'
-        required: true
-        default: '2.0'
-      ImageName:
-        description: 'Name of the Image'
-        required: true
-        default: 'demoimage'
       DockerPath:
         description: 'Provide the Docker Pathj Relative to Git'
         required: true
