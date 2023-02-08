@@ -1,0 +1,12 @@
+apiVersion: v2
+name: cision
+version: 0.0.1
+description: This is an application
+icon: xxxxx
+keywords:
+  - internal
+  - application
+  - container
+home: https://github.com/avsprashant/cision
+sources:
+  - https://github.com/avsprashant/cision

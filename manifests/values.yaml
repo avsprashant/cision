@@ -1,0 +1,47 @@
+# namespace: mflabstest
+
+registry:
+  name: avsprashant
+  private: false
+  pullSecret: xxxx
+
+replicaCount: 1
+
+hpa:
+  minReplicas: 1
+  maxReplicas: 1
+
+service:
+  type: NodePort
+  port1:
+    name: http
+    port: 80
+    targetPort: 80
+
+database:
+  table: "prashant"
+  username: admin
+  password: admin
+
+serviceMonitor:
+  interval: "30s"
+  path: "/"
+
+profiles:
+  active: development
+  development:
+    storage:
+      size: 500M
+
+image:
+  name: cision
+  tag: latest
+  pullPolicy: Always
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 400Mi
+  requests:
+    cpu: 200m
+    memory: 200Mi

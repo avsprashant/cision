@@ -1,0 +1,61 @@
+name: CI
+
+on: [pull_request, push]
+
+jobs:
+
+  which_branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: extract branch name on push event
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV; echo "HASH=${GITHUB_SHA::6}" >> $GITHUB_ENV; uname -m
+
+      - name: extract branch name on PR event
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: echo "BRANCH=${GITHUB_HEAD_REF##*/}" >> $GITHUB_ENV; echo "HASH=${GITHUB_SHA::6}" >> $GITHUB_ENV;
+
+      - name: Get branch name
+        run: echo 'The branch name is' ${{ env.BRANCH }}; echo 'HASH is' ${{ env.HASH }}
+
+      - name: checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+        with:
+          platforms: all
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfile
+          file: ./dockerfile/dockerfile
+          push: false
+          platforms: linux/amd64,linux/arm64,linux/ppc64le
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cision:${{ env.BRANCH }}-${{ env.HASH }}
+
+      - name: Scan for vulnerabilities
+        uses: crazy-max/ghaction-container-scan@v2
+        with:
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/cision:${{ env.BRANCH }}-${{ env.HASH }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfile
+          file: ./dockerfile/dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64,linux/ppc64le
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cision:${{ env.BRANCH }}-${{ env.HASH }}
